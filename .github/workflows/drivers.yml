@@ -1,0 +1,15 @@
+name: STM32 drivers
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  drivers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi
+      - run: node tests/run.cjs
+      - run: node tests/build.cjs

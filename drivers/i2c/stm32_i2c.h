@@ -18,9 +18,18 @@
 #define I2C_TIMEOUT_MS 100
 #endif
 
-/* Automatic retry attempts after a failed transaction (with bus/peripheral recovery). */
+/* Single-master bus only. Callers must serialize access. A retry can repeat
+ * already-transmitted bytes; use 0 retries for non-idempotent commands.
+ * Automatic retry attempts after a failed transaction (with bus/peripheral recovery). */
 #ifndef I2C_MAX_RETRIES
 #define I2C_MAX_RETRIES 2
+#endif
+
+#if I2C_MAX_RETRIES < 0 || I2C_MAX_RETRIES > 10
+#error "I2C_MAX_RETRIES must be between 0 and 10"
+#endif
+#ifndef I2C_INSTANCE_MASK
+#define I2C_INSTANCE_MASK 3U
 #endif
 
 /* I2C instance index (0 = I2C1, 1 = I2C2, etc.) */
@@ -59,7 +68,7 @@ typedef struct {
 } i2c_stats_t;
 
 /**
- * @brief Initialize I2C peripheral (clock, pins, timing).
+ * @brief Initialize I2C peripheral (clock and timing). Caller configures AF/open-drain pins.
  * @param inst Instance index
  * @param clock_speed_hz Target bus speed in Hz (e.g. 100000, 400000)
  * @return true on success, false on error
@@ -83,7 +92,7 @@ bool i2c_recover(i2c_instance_t inst);
  * @param inst Instance index
  * @param addr 7-bit slave address
  * @param data Pointer to data
- * @param len Number of bytes
+ * @param len Number of bytes; v2 families accept 0..255 per transaction.
  * @return true on success
  */
 bool i2c_write(i2c_instance_t inst, uint8_t addr, const uint8_t *data, uint16_t len);
@@ -93,7 +102,7 @@ bool i2c_write(i2c_instance_t inst, uint8_t addr, const uint8_t *data, uint16_t 
  * @param inst Instance index
  * @param addr 7-bit slave address
  * @param data Buffer to store read data
- * @param len Number of bytes
+ * @param len Number of bytes; v2 families accept 0..255 per transaction.
  * @return true on success
  */
 bool i2c_read(i2c_instance_t inst, uint8_t addr, uint8_t *data, uint16_t len);

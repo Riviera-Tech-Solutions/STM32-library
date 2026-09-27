@@ -1,4 +1,4 @@
-/** @file stm32_uart.h – UART driver API (stub). */
+/** @file stm32_uart.h – Polled UART, 8-N-1 API. */
 #ifndef STM32_UART_H
 #define STM32_UART_H
 #include <stdint.h>
@@ -8,6 +8,16 @@
 #define UART_TX_TIMEOUT_LOOPS 1000000U
 #endif
 
+#ifndef UART_TX_TIMEOUT_MS
+#define UART_TX_TIMEOUT_MS 100U
+#endif
+#ifndef UART_INSTANCE_MASK
+#define UART_INSTANCE_MASK 3U
+#endif
+/* Maximum baud error, in parts per million (default 2%). */
+#ifndef UART_MAX_BAUD_ERROR_PPM
+#define UART_MAX_BAUD_ERROR_PPM 20000U
+#endif
 typedef enum {
   UART_ERR_NONE = 0,
   UART_ERR_INVALID_INSTANCE,

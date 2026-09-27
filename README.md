@@ -1,7 +1,7 @@
-# STM32 code suite – embedded C
+# STM32 embedded C suite
 
-- **core/** – Startup, system, CMSIS per Cortex type (M0, M3, M4, M7, M33).
-- **drivers/** – GPIO, I2C, SPI, UART, TIM, ADC (one folder per driver).
-- **peripherals/** – LCD 16x2 and other external modules.
+core/ contains cold-reset startup/system/linker templates; drivers/ contains register-level polled drivers; peripherals/ contains external-device helpers; rtos/ provides optional FreeRTOS sources.
 
-Each driver/peripheral is optimized C with clear APIs and no magic numbers. Family-specific code uses `#if defined(STM32F4)` etc. where needed.
+Start with the [driver guide](drivers/README.md), [update notes](CHANGELOG.md) and [board checks](tests/HARDWARE.md). Select exact-part memory, pins, clocks and available peripheral instances before flashing. IRQ tables and security startup require board integration.
+
+Run node tests/run.cjs for host regressions and node tests/build.cjs for ARM compile/link checks. Automated checks do not replace hardware validation.
