@@ -361,23 +361,25 @@ void i2c_deinit(i2c_instance_t inst) {
 }
 
 bool i2c_recover(i2c_instance_t inst) {
-  if (!is_valid_inst(inst)) return false;
-  s_i2c_stats[inst].recover_attempts++;
+  /* Keep the array bound explicit across compiler interprocedural passes. */
+  if ((unsigned)inst >= I2C_INSTANCE_COUNT || !is_valid_inst(inst)) return false;
+  i2c_stats_t *stats = &s_i2c_stats[(unsigned)inst];
+  stats->recover_attempts++;
   uint32_t clk = s_i2c_clock_hz[inst];
   i2c_deinit(inst);
   if (!i2c_init(inst, clk)) {
-    s_i2c_stats[inst].recover_fail++;
+    stats->recover_fail++;
     i2c_set_error(inst, I2C_ERR_INIT_FAILED);
     return false;
   }
   uint32_t base = get_base(inst);
   if (base == 0U) {
-    s_i2c_stats[inst].recover_fail++;
+    stats->recover_fail++;
     i2c_set_error(inst, I2C_ERR_BASE_UNAVAILABLE);
     return false;
   }
   i2c_soft_recover(base);
-  s_i2c_stats[inst].recover_ok++;
+  stats->recover_ok++;
   i2c_set_error(inst, I2C_ERR_NONE);
   return true;
 }
