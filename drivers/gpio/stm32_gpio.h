@@ -23,10 +23,20 @@ typedef enum {
   GPIO_PULL_DOWN = 2
 } gpio_pull_t;
 
+/* This API exposes ports A..G. Narrow this mask for your part/package. */
+#ifndef GPIO_PORT_MASK
+#define GPIO_PORT_MASK 0x7FU
+#endif
+
 /** Port and pin: port 0 = GPIOA, 1 = GPIOB, ... ; pin 0..15 */
 void gpio_set_mode(uint8_t port, uint8_t pin, gpio_mode_t mode);
 void gpio_set_pull(uint8_t port, uint8_t pin, gpio_pull_t pull);
 void gpio_write(uint8_t port, uint8_t pin, bool high);
 bool gpio_read(uint8_t port, uint8_t pin);
+
+/* Configure AF0..AF15 on MODER families; F1 requires AFIO remap externally
+ * and returns false. Configure AF/type/pull before switching the pin to AF. */
+bool gpio_set_af(uint8_t port, uint8_t pin, uint8_t alternate);
+bool gpio_set_open_drain(uint8_t port, uint8_t pin, bool open_drain);
 
 #endif /* STM32_GPIO_H */
