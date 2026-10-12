@@ -3,8 +3,8 @@
  * @brief STM32F4 system init — FPU, vector table, HSI→PLL→SYSCLK bring-up.
  *
  * Default: HSI (16 MHz) → PLL → 84 MHz SYSCLK, which is valid on every F4 part
- * (F401 max is 84 MHz; higher parts can go faster — raise SYSCLK_MHZ and the
- * flash wait-states scale automatically). Override SYSCLK_MHZ at compile time.
+ * (F401 max is 84 MHz). This cold-reset profile requires a 2.7–3.6 V supply.
+ * Other clock rates need a board-specific implementation and bus prescalers.
  *
  * Fixes vs the previous version, which could never lock the PLL: the F4 PLL
  * configuration lives in RCC_PLLCFGR (offset 0x04), NOT RCC_CFGR (0x08). The
@@ -23,6 +23,9 @@
 #endif
 #ifndef HSI_MHZ
 #define HSI_MHZ             (16U)   /* STM32F4 internal RC oscillator */
+#endif
+#if SYSCLK_MHZ != 84U || HSI_MHZ != 16U
+#error "This profile supports 84 MHz from 16 MHz HSI; supply a board-specific SystemInit for other clocks."
 #endif
 
 /* ---- RCC ------------------------------------------------------------------- */
@@ -61,14 +64,13 @@
 #define VECTOR_TABLE_BASE   0x08000000U
 
 /* ---- Derived PLL parameters -----------------------------------------------
- * VCO input is fixed at 2 MHz (recommended): PLLM = HSI_MHZ / 2.
- * With PLLP = /2, SYSCLK = (2 MHz * PLLN) / 2 = PLLN MHz, so PLLN = SYSCLK_MHZ.
+ * HSI / 16 * 336 / 4 = 84 MHz. VCO=336 MHz also satisfies F405/F407's
+ * 192 MHz minimum, unlike the former 168 MHz VCO. PLLQ=7 gives 48 MHz.
  * ------------------------------------------------------------------------- */
-#define PLL_VCO_IN_MHZ      (2U)
-#define PLLM                (HSI_MHZ / PLL_VCO_IN_MHZ)   /* 16/2 = 8   */
-#define PLLN                (SYSCLK_MHZ)                 /* 84         */
-#define PLLP_DIV            (2U)                         /* SYSCLK = VCO/2 */
-#define PLLP_BITS           (0U)                         /* 00 encodes /2 */
+#define PLLM                (16U)
+#define PLLN                (336U)
+#define PLLP_BITS           (1U)                         /* 01 encodes /4 */
+#define PLLQ                (7U)
 
 /* Flash wait-states: F4 @ 2.7–3.6 V needs +1 WS per ~30 MHz. */
 #define FLASH_WS            ((SYSCLK_MHZ - 1U) / 30U)
@@ -95,6 +97,7 @@ static void SystemClock_Config(void) {
       ((PLLM & 0x3FU) << 0) |
       ((PLLN & 0x1FFU) << 6) |
       ((PLLP_BITS & 0x3U) << 16) |
+      (PLLQ << 24) |
       RCC_PLLCFGR_PLLSRC_HSI;
 
   /* Start the PLL and wait for lock. */

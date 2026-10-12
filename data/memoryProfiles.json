@@ -1,0 +1,7 @@
+{
+  "STM32F401CC": {"flashK":256,"ramK":64,"source":"https://www.st.com/resource/en/datasheet/stm32f401cb.pdf"},
+  "STM32F401CE": {"flashK":512,"ramK":96,"source":"https://www.st.com/resource/en/datasheet/stm32f401re.pdf"},
+  "STM32F401RE": {"flashK":512,"ramK":96,"source":"https://www.st.com/resource/en/datasheet/stm32f401re.pdf"},
+  "STM32G071RB": {"flashK":128,"ramK":36,"source":"https://www.st.com/resource/en/datasheet/stm32g071rb.pdf"},
+  "STM32F103C8": {"flashK":64,"ramK":20,"source":"https://www.st.com/resource/en/datasheet/stm32f103c8.pdf"}
+}

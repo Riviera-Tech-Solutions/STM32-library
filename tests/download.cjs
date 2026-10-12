@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const {Writable}=require('node:stream');
 const {inflateRawSync}=require('node:zlib');
 const assert=require('node:assert/strict');
-const suite=path.resolve(__dirname,'../..');
+const suite=fs.existsSync(path.resolve(__dirname,'../../services/zipBuilder.js')) ? path.resolve(__dirname,'../..') : path.resolve(__dirname,'..');
 const {buildAndStreamZip}=require(path.join(suite,'services/zipBuilder'));
 const treeData=require(path.join(suite,'data/folderTree.json'));
 function unzip(buffer) {
@@ -26,15 +26,17 @@ function unzip(buffer) {
   }
   return entries;
 }
-async function archive(family,core) {
+async function archive(family,core, nodeIds=['drivers'], name='test') {
   const chunks=[];
   const res=new Writable({write(c,e,done){chunks.push(c);done();}});
   res.setHeader=()=>{};res.status=()=>res;res.json=()=>{throw new Error('archive failure');};
   const done=new Promise((resolve,reject)=>{res.on('finish',resolve);res.on('error',reject);});
-  buildAndStreamZip({mcu:{id:'test',name:'test',family,core},nodeIds:['drivers'],treeData,codeDir:path.join(suite,'code')},res,'test.zip');
+  const codeDir=fs.existsSync(path.join(suite,'code/core')) ? path.join(suite,'code') : suite;
+  buildAndStreamZip({mcu:{id:name.toLowerCase(),name,family,core},nodeIds,treeData,codeDir},res,'test.zip');
   await done;return unzip(Buffer.concat(chunks));
 }
-(async()=>{
+module.exports={archive};
+if(require.main===module) (async()=>{
   const out=fs.mkdtempSync(path.join(os.tmpdir(),'stm32-download-'));
   for(const [family,core] of [['F4','cortex-m4'],['G0','cortex-m0plus']]) {
     const entries=await archive(family,core);

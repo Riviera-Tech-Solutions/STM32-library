@@ -1,0 +1,13 @@
+{
+  "name": "rts-stm32-library",
+  "version": "0.2.0",
+  "private": true,
+  "description": "STM32 source library and project generator from Riviera Tech Solutions",
+  "scripts": {
+    "test": "node tests/run.cjs && node tests/download.cjs",
+    "test:arm": "node tests/build.cjs",
+    "test:projects": "node tests/projects.cjs"
+  },
+  "dependencies": {"archiver": "7.0.1"},
+  "engines": {"node": ">=20"}
+}

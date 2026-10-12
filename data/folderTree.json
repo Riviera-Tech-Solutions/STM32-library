@@ -1,0 +1,261 @@
+{
+  "description": "Folder tree for STM32 code suite. Each node maps to code path under code/. core required; drivers and peripherals optional.",
+  "updated": "2026-09-27",
+  "rootId": "root",
+  "nodes": {
+    "root": {
+      "id": "root",
+      "label": "STM32 Project",
+      "path": "",
+      "required": false,
+      "children": [
+        "core",
+        "drivers",
+        "peripherals",
+        "rtos"
+      ]
+    },
+    "core": {
+      "id": "core",
+      "label": "Core",
+      "path": "core",
+      "required": true,
+      "description": "Startup, system init, linker script (required for selected MCU)",
+      "children": [
+        "core_startup",
+        "core_system",
+        "core_cmsis"
+      ],
+      "selectable": false
+    },
+    "core_startup": {
+      "id": "core_startup",
+      "label": "Startup",
+      "path": "core/startup",
+      "required": true,
+      "parent": "core",
+      "selectable": false
+    },
+    "core_system": {
+      "id": "core_system",
+      "label": "System",
+      "path": "core/system",
+      "required": true,
+      "parent": "core",
+      "selectable": false
+    },
+    "core_cmsis": {
+      "id": "core_cmsis",
+      "label": "CMSIS / minimal",
+      "path": "core/cmsis",
+      "required": true,
+      "parent": "core",
+      "selectable": false
+    },
+    "drivers": {
+      "id": "drivers",
+      "label": "Drivers",
+      "path": "drivers",
+      "required": false,
+      "children": [
+        "drv_gpio",
+        "drv_i2c",
+        "drv_spi",
+        "drv_uart",
+        "drv_tim",
+        "drv_adc",
+        "drv_wdg",
+        "drv_fault"
+      ],
+      "selectable": false
+    },
+    "drv_gpio": {
+      "id": "drv_gpio",
+      "label": "GPIO",
+      "path": "drivers/gpio",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "General-purpose I/O"
+    },
+    "drv_i2c": {
+      "id": "drv_i2c",
+      "label": "I2C",
+      "path": "drivers/i2c",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Polled single-master I2C; v2 transactions up to 255 bytes"
+    },
+    "drv_spi": {
+      "id": "drv_spi",
+      "label": "SPI",
+      "path": "drivers/spi",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Polled mode-0, 8-bit SPI master; see driver support matrix"
+    },
+    "drv_uart": {
+      "id": "drv_uart",
+      "label": "UART",
+      "path": "drivers/uart",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "UART / USART driver"
+    },
+    "drv_tim": {
+      "id": "drv_tim",
+      "label": "Timer (TIM)",
+      "path": "drivers/tim",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Polled PWM, TIM2/TIM3 channel 1; see driver support matrix"
+    },
+    "drv_adc": {
+      "id": "drv_adc",
+      "label": "ADC",
+      "path": "drivers/adc",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Polled ADC1 external-channel conversion; see driver support matrix"
+    },
+    "peripherals": {
+      "id": "peripherals",
+      "label": "Peripherals",
+      "path": "peripherals",
+      "required": false,
+      "children": [
+        "periph_lcd_16x2",
+        "periph_ssd1306",
+        "periph_dht22",
+        "periph_ds18b20",
+        "periph_bme280",
+        "periph_mpu6050",
+        "periph_hcsr04",
+        "periph_bh1750"
+      ],
+      "selectable": false
+    },
+    "periph_lcd_16x2": {
+      "id": "periph_lcd_16x2",
+      "label": "LCD 16x2",
+      "path": "peripherals/lcd_16x2",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "HD44780 16x2 character LCD (I2C or GPIO)",
+      "dependsOn": [
+        "drv_i2c"
+      ]
+    },
+    "periph_ssd1306": {
+      "id": "periph_ssd1306",
+      "label": "SSD1306 OLED",
+      "path": "peripherals/ssd1306",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "128x64 I2C/SPI OLED display",
+      "dependsOn": [
+        "drv_i2c"
+      ]
+    },
+    "periph_dht22": {
+      "id": "periph_dht22",
+      "label": "DHT22",
+      "path": "peripherals/dht22",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "Temp + humidity sensor (1-wire)",
+      "dependsOn": [
+        "drv_gpio"
+      ]
+    },
+    "periph_ds18b20": {
+      "id": "periph_ds18b20",
+      "label": "DS18B20",
+      "path": "peripherals/ds18b20",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "1-Wire temperature sensor",
+      "dependsOn": [
+        "drv_gpio"
+      ]
+    },
+    "periph_bme280": {
+      "id": "periph_bme280",
+      "label": "BME280",
+      "path": "peripherals/bme280",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "Temp, humidity, pressure (I2C/SPI)",
+      "dependsOn": [
+        "drv_i2c"
+      ]
+    },
+    "periph_mpu6050": {
+      "id": "periph_mpu6050",
+      "label": "MPU6050",
+      "path": "peripherals/mpu6050",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "Accel + gyro (I2C)",
+      "dependsOn": [
+        "drv_i2c"
+      ]
+    },
+    "periph_hcsr04": {
+      "id": "periph_hcsr04",
+      "label": "HC-SR04",
+      "path": "peripherals/hcsr04",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "Ultrasonic distance (GPIO + TIM)",
+      "dependsOn": [
+        "drv_gpio",
+        "drv_tim"
+      ]
+    },
+    "periph_bh1750": {
+      "id": "periph_bh1750",
+      "label": "BH1750",
+      "path": "peripherals/bh1750",
+      "parent": "peripherals",
+      "selectable": true,
+      "description": "Ambient light sensor (I2C)",
+      "dependsOn": [
+        "drv_i2c"
+      ]
+    },
+    "rtos": {
+      "id": "rtos",
+      "label": "RTOS",
+      "path": "rtos",
+      "required": false,
+      "children": [
+        "rtos_freertos"
+      ],
+      "selectable": false
+    },
+    "rtos_freertos": {
+      "id": "rtos_freertos",
+      "label": "FreeRTOS (kernel + port)",
+      "path": "rtos/freertos",
+      "parent": "rtos",
+      "selectable": true,
+      "description": "FreeRTOS kernel with correct port for your MCU (GCC ARM Cortex-M)"
+    },
+    "drv_wdg": {
+      "id": "drv_wdg",
+      "label": "Watchdog (IWDG)",
+      "path": "drivers/wdg",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Independent watchdog — resets a hung device"
+    },
+    "drv_fault": {
+      "id": "drv_fault",
+      "label": "Fault recovery",
+      "path": "drivers/fault",
+      "parent": "drivers",
+      "selectable": true,
+      "description": "Reset + record on a fatal fault instead of hanging"
+    }
+  }
+}

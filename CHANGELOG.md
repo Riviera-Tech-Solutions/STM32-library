@@ -12,3 +12,12 @@
 - Regression, ARM build/link and generated-download coverage. Physical hardware remains unqualified.
 
 Compatibility: unsupported initialization, oversized v2 I2C transfers, unsupported PWM channels, impossible SPI/baud settings and missing/ambiguous family defines are rejected. Review the [driver guide](drivers/README.md) before updating a board project.
+# Buildable downloads and AI-tool integration
+
+- One CMake/Ninja build for bare-metal and FreeRTOS ZIPs, including a heartbeat application, selected drivers and transitive peripheral dependencies.
+- Fixed FreeRTOS tick-width conflict, clock defaults, interrupt-priority encoding and scheduler handler routing; no static-allocation callbacks are required by the starter.
+- Exact-part memory profiles for F401CC/CE/RE, G071RB and F103C8. Other selections explicitly remain unverified templates; flash requires board and memory confirmation.
+- Plain-data configuration and consistent PowerShell/POSIX runners; build works offline without confirmed hardware. No silent tool installation or guessed flash commands.
+- Public generator and CLI mirror website sources, with actual ZIP compilation and mocked flash-command regression tests.
+- F4 84 MHz profile uses a 336 MHz PLL VCO and rejects unsupported clock overrides.
+
